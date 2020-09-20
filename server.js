@@ -18,6 +18,13 @@ app.use(bodyParser.json())
 
 app.use('/', routes);
 
+app.use((req, res, next) => {
+
+	return res.status(404).json({
+		success: 'Use routes'
+	})
+})
+
 // listen for requests
 const port = process.env.PORT || 5000;
 app.listen(port, () => {

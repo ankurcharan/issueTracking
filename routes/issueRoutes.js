@@ -11,13 +11,14 @@ app.route('/list-issues')
 app.route('/list-issues/:id')
     .get(findIssueById);
 
-
 app.route('/update-issue/:id')
     .patch(updateIssue);
 
 app.route('/delete-issue/:id')
     .delete(deleteIssueById);
 
+
+    
 
 function getIssueById(id) {
 
@@ -286,7 +287,14 @@ function addIssue (req, res, next) {
 
     let issueTitle = req.body.issueTitle;
     let issueDesc = req.body.issueDesc;
-    console.log(issueTitle, issueDesc);
+    // console.log(issueTitle, issueDesc);
+
+    if(!issueTitle || !issueDesc) {
+        return res.status(400).json({
+            success: false,
+            message: 'Send issueTitle, issueDesc'
+        });
+    }
 
     // const query = `SELECT * from ${connection.escape(constants.issueTableName)};`
     const query = `INSERT INTO ${constants.issueTableName} (
@@ -296,7 +304,7 @@ function addIssue (req, res, next) {
             ${connection.escape(issueTitle)}, 
             ${connection.escape(issueDesc)}
         );`
-    console.log(query);
+    // console.log(query);
 
     connection.query(query, (err, results, fields) => {
         
@@ -307,7 +315,7 @@ function addIssue (req, res, next) {
             });
         }
 
-        console.log('results', results);
+        // console.log('results', results);
         
         return res.status(201).json({
             success: true,
