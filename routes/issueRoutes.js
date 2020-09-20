@@ -12,6 +12,9 @@ app.route('/list-issues')
 app.route('/update-issue/:id')
     .patch(updateIssue);
 
+app.route('/delete-issue/:id')
+    .delete(deleteIssueById);
+
 
 function getIssueById(id) {
 
@@ -26,6 +29,47 @@ function getIssueById(id) {
                 resolve(results);
             }
         })
+    })
+}
+
+
+async function deleteIssueById(req, res, next) {
+
+    const id = req.params.id;
+    const deleteQuery = `DELETE FROM ${constants.issueTableName} WHERE ${constants.issueTableId} = ${id};`
+
+    try {
+        let issue = await getIssueById(id);
+        if(issue.length === 0) {
+
+            return res.status(204).json({
+                success: false,
+                message: 'No issue with id'
+            });
+        }
+    } catch (err) {
+
+        console.log(err);
+        return res.status(500).json({
+            success: false,
+            message: 'Server Error, Try Again'
+        });
+    }
+
+    connection.query(deleteQuery, (err, results, fields) => {
+
+        if(err) {
+            console.log(err);
+            return res.status(500).json({
+                success: false,
+                message: 'Server Error. Try Again.'
+            });
+        }
+
+        return res.status(200).json({
+            success: false,
+            message: 'Issue Deleted'
+        });
     })
 }
 
@@ -181,7 +225,7 @@ function listIssuesPage (req, res, next) {
             console.log('err', err);
         }
 
-        console.log(totalIssues, results);
+        // console.log(totalIssues, results);
         
         return res.status(201).json({
             success: true,
