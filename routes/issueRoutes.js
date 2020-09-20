@@ -8,6 +8,9 @@ app.route('/add-issue')
 
 app.route('/list-issues')
     .get(listIssuesPage);
+app.route('/list-issues/:id')
+    .get(findIssueById);
+
 
 app.route('/update-issue/:id')
     .patch(updateIssue);
@@ -30,6 +33,39 @@ function getIssueById(id) {
             }
         })
     })
+}
+
+async function findIssueById(req, res, next) {
+
+    const id = req.params.id;
+
+    try {
+        let issue = await getIssueById(id);
+        if(issue.length === 0) {
+
+            return res.status(204).json({
+                success: true,
+                message: 'No issue with id'
+            });
+        }
+
+        console.log(issue);
+
+        return res.status(200).json({
+            success: true,
+            message: 'Issue Received',
+            data: {
+                issue: issue[0]
+            }
+        })
+    } catch (err) {
+
+        console.log(err);
+        return res.status(500).json({
+            success: false,
+            message: 'Server Error, Try Again'
+        })
+    }
 }
 
 
