@@ -20,3 +20,8 @@ $ cd issues/
 $ npm i 
 $ npm start
 ```
+
+
+- use Postman Collection for API Reference
+
+**Ankur Charan**
