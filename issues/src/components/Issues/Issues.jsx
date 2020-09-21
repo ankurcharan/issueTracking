@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect } from 'react';
+import React, { useReducer, useEffect, useState } from 'react';
 
 import axios from 'axios';
 import { Link, Redirect } from "react-router-dom";
@@ -6,6 +6,8 @@ import { Link, Redirect } from "react-router-dom";
 
 import Icon from '@material-ui/core/Icon';
 import ArrowBack from '@material-ui/icons/ArrowBack';
+
+import Pagination from "react-bootstrap/Pagination";
 
 
 
@@ -16,8 +18,17 @@ const issuesReducer = (state, action) => {
             return {
                 ...state, 
                 totalIssues: action.payload.issuesTotal,
-                issues: action.payload.issues
-            }
+				issues: action.payload.issues,
+				loading: false,
+				issueLoaded: true
+			}
+		case 'REQUESTING_ISSUES':
+			return {
+				...state,
+				loading: true,
+				issueLoaded: false
+			}
+		default: return state
     }
 } 
 
@@ -29,12 +40,28 @@ export const Issues = (props) => {
         
         pageNumber: props.match.params.id,
         totalIssues: 0,
-        issues: []
-    
-    });
+		issues: [],
+		loading: false,
+		issueLoaded: false
+	});
 
+	const [pageCrumbs, setPageCrumbs] = useState([]);
+
+	useEffect(() => {
+
+		let crumbs = [];
+		for(let i = 0 ; i < (state.totalIssues / 10) ; i++) {
+			crumbs.push(i)
+		}
+		setPageCrumbs(crumbs);
+	}, [state.totalIssues])
+	
     const fetchIssues = async () => {
-        
+		
+		dispatch({
+			type: 'REQUESTING_ISSUES'
+		})
+		
         const pageNumber = state.pageNumber;
         const res = await axios.get(`http://localhost:5000/issues/list-issues?page=${pageNumber}`);
 
@@ -52,12 +79,12 @@ export const Issues = (props) => {
 
     useEffect(() => {
         fetchIssues();
-    }, []);
+	}, []);
 
     return (
         <div className='row'>
             {
-                (state.issues.length == 0) ?
+                (state.issueLoaded === true && state.issues.length === 0) ?
                 (
                     <Redirect to='/issues/0' />
                 ) : (
@@ -73,6 +100,25 @@ export const Issues = (props) => {
 							</div>
 							<div className="col-10">
 								<h1 className='mt-4'>Issues</h1>
+							</div>
+
+							<div className="col-12">
+								<nav aria-label="Page navigation example">
+									<ul class="pagination">
+										{
+											(state.totalIssues !== 0) ? (
+												pageCrumbs.map((crumb) => {
+													
+													return <li class="page-item">
+														<a class="page-link" href={`/issues/${crumb}`}>{crumb}</a>
+													</li>
+												})
+											) : (
+												null
+											)
+										}
+									</ul>
+								</nav>
 							</div>
 						
 							<div className="row">
