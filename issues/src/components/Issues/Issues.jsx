@@ -58,14 +58,20 @@ export const Issues = (props) => {
 		setPageCrumbs(crumbs);
 	}, [state.totalIssues])
 	
-    const fetchIssues = async () => {
+    const fetchIssues = async (type) => {
 		
 		dispatch({
 			type: 'REQUESTING_ISSUES'
 		})
+
+		let url = null;
+		if(!type) {
+			url = `http://localhost:5000/issues/list-issues?page=${state.pageNumber}`;
+		} else {
+			url = `http://localhost:5000/issues/list-issues?page=${state.pageNumber}&type=${type}`;
+		}
 		
-        const pageNumber = state.pageNumber;
-        const res = await axios.get(`http://localhost:5000/issues/list-issues?page=${pageNumber}`);
+        const res = await axios.get(url);
 
         if(res.status === 200) {
 
@@ -87,6 +93,7 @@ export const Issues = (props) => {
 		e.preventDefault();
 
 		console.log(e.target.name);
+		fetchIssues(e.target.name);
 	}
 
     return (
@@ -133,7 +140,7 @@ export const Issues = (props) => {
 
 							<div className="col-12 mb-3">
 								<DropdownButton id="dropdown-basic-button" title="Dropdown button">
-									<Dropdown.Item href="#!" onClick={filterHandle} name='showAll'>Show All</Dropdown.Item>
+									<Dropdown.Item href="#!" onClick={filterHandle} name='all'>Show All</Dropdown.Item>
 									<Dropdown.Item href="#!" onClick={filterHandle} name='open'>Show Open</Dropdown.Item>
 									<Dropdown.Item href="#!" onClick={filterHandle} name='closed'>Show Closed</Dropdown.Item>
 								</DropdownButton>
