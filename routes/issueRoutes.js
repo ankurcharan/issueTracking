@@ -7,7 +7,8 @@ app.route('/add-issue')
     .post(addIssue);
 
 app.route('/list-issues')
-    .get(listIssuesPage);
+    .get(listIssuesPage)
+    .get(filterGet);
 app.route('/list-issues/:id')
     .get(findIssueById);
 
@@ -241,8 +242,12 @@ function listIssuesPage (req, res, next) {
         pageNumber = 0;
     }
 
+    let type = req.query.type;
+    if(type && type !== 'all') {
+        return next();
+    }
+
     const offset = parseInt(pageNumber * 10);
-    console.log('offeset', offset, '   jsgdhsgdhsgdhs');
 
     const getIssueQuery = `SELECT * FROM ${constants.issueTableName} LIMIT 10 OFFSET ${offset};`
     connection.query(getIssueQuery, async (err, results, fields) => {
@@ -257,6 +262,87 @@ function listIssuesPage (req, res, next) {
         let totalIssues = null;
         try {
             totalIssues = await numberOfIssues();
+        }
+         catch(err) {
+            console.log('err', err);
+        }
+
+        // console.log(totalIssues, results);
+        
+        return res.status(200).json({
+            success: true,
+            message: 'Issues Received',
+            data: {
+                'issuesTotal': totalIssues,
+                'issues': results
+            }
+        })
+    })
+}
+
+function getCountIssueType (type) {
+
+    return new Promise((resolve, reject) => {
+
+        let getIssueQuery = null;
+        if(type === 'open') {
+            getIssueQuery = `SELECT COUNT(*) AS count FROM ${constants.issueTableName} WHERE isopen = 1`;
+        } else if(type === 'closed') {
+            getIssueQuery = `SELECT COUNT(*) AS count FROM ${constants.issueTableName} WHERE isopen = 0`;
+        } else {
+            reject ('Invalid Type');
+        }
+        
+        connection.query(getIssueQuery, async (err, results, fields) => {
+
+            if(err) {
+                reject(err);
+            } else {
+                resolve(results[0].count);
+            }
+        })
+    })
+}
+
+function filterGet(req, res, next) {
+
+    let type = req.query.type.trim();
+
+    if(!(type === 'open' || type === 'closed')) {
+        return res.status(400).json({
+            success: false,
+            message: 'type can be all,open,closed'
+        });
+    }
+    
+    let pageNumber = req.query.page;
+    if(!pageNumber) {
+        pageNumber = 0;
+    }
+
+    const offset = parseInt(pageNumber * 10);
+
+    let getIssueQuery = null;
+    if(type === 'open') {
+        getIssueQuery = `SELECT * FROM ${constants.issueTableName} WHERE isopen = 1 LIMIT 10 OFFSET ${offset};`
+    } else if(type === 'closed') {
+        getIssueQuery = `SELECT * FROM ${constants.issueTableName} WHERE isopen = 0 LIMIT 10 OFFSET ${offset};`
+    }
+
+    console.log(getIssueQuery);
+    
+    connection.query(getIssueQuery, async (err, results, fields) => {
+
+        if(err) {
+            return res.status(500).json({
+                success: false,
+                message: 'Server Error. Try Again!'
+            });
+        }
+
+        let totalIssues = null;
+        try {
+            totalIssues = await getCountIssueType(type);
         }
          catch(err) {
             console.log('err', err);

@@ -9,6 +9,8 @@ import ArrowBack from '@material-ui/icons/ArrowBack';
 
 import Pagination from "react-bootstrap/Pagination";
 
+import DropdownButton from 'react-bootstrap/DropdownButton';
+import Dropdown from 'react-bootstrap/Dropdown'
 
 
 const issuesReducer = (state, action) => {
@@ -81,6 +83,12 @@ export const Issues = (props) => {
         fetchIssues();
 	}, []);
 
+	const filterHandle = (e) => {
+		e.preventDefault();
+
+		console.log(e.target.name);
+	}
+
     return (
         <div className='row'>
             {
@@ -107,11 +115,13 @@ export const Issues = (props) => {
 									<ul class="pagination">
 										{
 											(state.totalIssues !== 0) ? (
+
 												pageCrumbs.map((crumb) => {
-													
-													return <li class="page-item">
-														<a class="page-link" href={`/issues/${crumb}`}>{crumb}</a>
-													</li>
+	
+													return <li class={`page-item`}>
+															<a class="page-link" href={`/issues/${crumb}`}>{crumb}</a>
+														</li>
+												
 												})
 											) : (
 												null
@@ -119,6 +129,14 @@ export const Issues = (props) => {
 										}
 									</ul>
 								</nav>
+							</div>
+
+							<div className="col-12 mb-3">
+								<DropdownButton id="dropdown-basic-button" title="Dropdown button">
+									<Dropdown.Item href="#!" onClick={filterHandle} name='showAll'>Show All</Dropdown.Item>
+									<Dropdown.Item href="#!" onClick={filterHandle} name='open'>Show Open</Dropdown.Item>
+									<Dropdown.Item href="#!" onClick={filterHandle} name='closed'>Show Closed</Dropdown.Item>
+								</DropdownButton>
 							</div>
 						
 							<div className="row">
