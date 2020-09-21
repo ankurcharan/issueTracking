@@ -264,7 +264,7 @@ function listIssuesPage (req, res, next) {
 
         // console.log(totalIssues, results);
         
-        return res.status(201).json({
+        return res.status(200).json({
             success: true,
             message: 'Issues Received',
             data: {
