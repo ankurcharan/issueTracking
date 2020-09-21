@@ -10,7 +10,13 @@
 	* ALTER USER 'issues'@'localhost' IDENTIFIED WITH mysql_native_password BY 'pass';
 (use if database is not connected)
 
-- then run
+- Run
 ```
-$npm start
+  - Node Server
+$ npm i
+$ npm start
+  - For React Server
+$ cd issues/
+$ npm i 
+$ npm start
 ```
