@@ -24,4 +24,7 @@ $ npm start
 
 - use Postman Collection for API Reference
 
+
+- add some issues before trying to list them
+
 **Ankur Charan**
