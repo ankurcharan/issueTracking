@@ -12,27 +12,7 @@ import Pagination from "react-bootstrap/Pagination";
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown'
 
-
-const issuesReducer = (state, action) => {
-
-    switch(action.type) {
-        case 'ISSUES_RECEIVED':
-            return {
-                ...state, 
-                totalIssues: action.payload.issuesTotal,
-				issues: action.payload.issues,
-				loading: false,
-				issueLoaded: true
-			}
-		case 'REQUESTING_ISSUES':
-			return {
-				...state,
-				loading: true,
-				issueLoaded: false
-			}
-		default: return state
-    }
-} 
+import { issuesReducer } from "../../reducers";
 
 export const Issues = (props) => {
 

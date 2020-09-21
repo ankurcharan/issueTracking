@@ -5,26 +5,7 @@ import { Link } from "react-router-dom";
 import Icon from '@material-ui/core/Icon';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 
-const addIssueReducer = (state, action) => {
-    switch(action.type) {
-        case 'TITLE_CHANGED':
-            return {
-                ...state,
-                title: action.payload
-            }
-        case 'BODY_CHANGED':
-            return {
-                ...state,
-                body: action.payload
-            }
-        case 'RESET':
-            return {
-                ...state,
-                title: '',
-                body: ''
-            }
-    }
-}
+import { addIssueReducer } from "../../reducers";
 
 export const AddIssue = () => {
 

@@ -5,24 +5,7 @@ import axios from 'axios';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import { Icon } from '@material-ui/core';
 
-const issueReducer = (state, action) => {
-
-    switch(action.type) {
-        case 'ISSUE_RECEIVED':
-            return {
-                ...state,
-                title: action.payload.data.issue.title,
-                body: action.payload.data.issue.body,
-                isOpen: action.payload.data.issue.isopen,
-                message: null
-            }
-        case 'NO_ISSUE_WITH_ID':
-            return {
-                ...state, 
-                message: `No Issue With ID ${state.id}` 
-            }
-    }
-}
+import { issueReducer } from "../../reducers";
 
 export const Issue = (props) => {
 

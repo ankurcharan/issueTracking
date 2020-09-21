@@ -1,7 +1,6 @@
 const app = require('express').Router();
 
-
-// rouotes import
+// routes import
 const issueRoutes = require('./issueRoutes');
 
 app.use('/issues', issueRoutes);
